@@ -19,7 +19,7 @@ jobs:
           node-version: 14
 
       - name: Build Angular app
-        run: npm install && npm run build -- --prod
+        run: npm install && npm run build
 
       - name: Deploy to Google Cloud Storage
         uses: google-github-actions/setup-gcloud@v0.3.0
