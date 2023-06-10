@@ -16,14 +16,20 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: 16
 
       - name: Build Angular app
-        run: npm install && npm run build -- --prod
+        run: npm install && npm run build
 
       - name: Deploy to Google Cloud Storage
-        uses: GoogleCloudPlatform/github-actions/deploy-cloud-storage@main
+        uses: google-github-actions/setup-gcloud@v0.3.0
         with:
-          credentials: ${{ secrets.GCP_SA_KEY }}
-          bucket: angular-advanced-ai
-          source: ./dist
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Configure gcloud
+        run: |
+          gcloud auth activate-service-account --key-file=${{ secrets.GCP_SA_KEY }}
+          gcloud config set project codefest-389002
+
+      - name: Deploy to Cloud Storage
+        run: gsutil -m rsync -R ./dist gs://angular-advanced-ai
